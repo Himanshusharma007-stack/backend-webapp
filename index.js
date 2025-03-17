@@ -9,14 +9,14 @@ const port = 3000;
 // Create an HTTP server and attach Socket.IO
 const server = http.createServer(app);
 
-const origin = 'https://www.drivefood.in'
+const origin = process.env.MYAPP_CLIENT_ORIGIN || '*'; // Use an environment variable for flexibility
 
 // Allow all origins for HTTP requests
 app.use(cors({
-  origin: origin, // Allow requests only from this origin
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
-  credentials: true, // Set to true if cookies/auth headers are required
+  origin: origin, 
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 
 app.options("*", (req, res) => {
@@ -33,9 +33,9 @@ app.use(express.json());
 // Attach Socket.IO with proper CORS settings
 const io = new Server(server, {
   cors: {
-    origin: origin, // Allow requests only from this origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
-    credentials: true, // Allow cookies/auth headers if needed
+    origin: origin,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   },
 });
 
@@ -92,6 +92,6 @@ app.use("/", (req, res) => res.send({ success: true, msg: 'Hello in DriveFood.' 
 module.exports.io = io;
 
 // Start the server
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   console.log(`App is listening on port ${port}`);
 });
